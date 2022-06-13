@@ -47,37 +47,128 @@ class MainScreen extends StatelessWidget {
                             style: TextStyle(fontSize: 32))))),
           ),
           Expanded(
-            flex: 4,
+            flex: 1,
             child: Container(
               color: const Color(0xFFFFABAB),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  FloatingActionButton.large(
-                    child: const Text(
-                      "On",
-                      style: TextStyle(fontSize: 30),
-                    ),
-                    onPressed: () {},
-                  ),
-                  FloatingActionButton.large(
-                    child: const Text(
-                      "On",
-                      style: TextStyle(fontSize: 30),
-                    ),
-                    onPressed: () {},
-                  ),
-                  FloatingActionButton.large(
-                    child: const Text(
-                      "On",
-                      style: TextStyle(fontSize: 30),
-                    ),
-                    onPressed: () {},
-                  ),
+                  Container(
+                      color: const Color(0xFF8ACEFA),
+                      width: MediaQuery.of(context).size.width * 0.32,
+                      padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child: Icon(Icons.arrow_back_sharp))),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.34,
+                      color: const Color(0xFFA7FF9A),
+                      padding: const EdgeInsets.fromLTRB(14, 27, 14, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child:
+                              Text('Режим', style: TextStyle(fontSize: 15)))),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.32,
+                      color: const Color(0xFFA7FF9A),
+                      padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child: Icon(Icons.arrow_forward_sharp))),
                 ],
               ),
             ),
-          )
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              color: const Color(0xFFFFABAB),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                      color: const Color(0xFF8ACEFA),
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child:
+                              Text('Белый', style: TextStyle(fontSize: 15)))),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      color: const Color(0xFFA7FF9A),
+                      padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child:
+                              Text('Красный', style: TextStyle(fontSize: 15)))),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              color: const Color(0xFFFFABAB),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                      color: const Color(0xFF8ACEFA),
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child:
+                              Text('Жёлтый', style: TextStyle(fontSize: 15)))),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      color: const Color(0xFFA7FF9A),
+                      padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child:
+                              Text('Зелёный', style: TextStyle(fontSize: 15)))),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 1,
+            child: Container(
+              color: const Color(0xFFFFABAB),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Container(
+                      color: const Color(0xFF8ACEFA),
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child:
+                              Text('Фиолетовый', style: TextStyle(fontSize: 15)))),
+                  Container(
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      color: const Color(0xFFA7FF9A),
+                      padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
+                      // padding: const EdgeInsets.all(27),
+                      child: const ElevatedButton(
+                          onPressed: null,
+                          child:
+                              Text('Синий', style: TextStyle(fontSize: 15)))),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
