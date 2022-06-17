@@ -1,30 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_first/screens/settings_page.dart';
-import 'package:network_info_plus/network_info_plus.dart';
-import 'package:ping_discover_network/ping_discover_network.dart';
+
+import '../funcs/functions.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({Key? key}) : super(key: key);
-
-  findDevice() async {
-    const int port = 23223;
-
-    final NetworkInfo networkInfo = NetworkInfo();
-    String? wifiIPv4 = await networkInfo.getWifiIP();
-
-    if (wifiIPv4 != null) {
-      final String subnet = wifiIPv4.substring(0, wifiIPv4.lastIndexOf('.'));
-      final stream = NetworkAnalyzer.discover2(subnet, port);
-      stream.listen((NetworkAddress addr) {
-        if (addr.exists) {
-          print('Found device: ${addr.ip}');
-        }
-      });
-    } else {
-      print("error");
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +41,7 @@ class MainScreen extends StatelessWidget {
                         child: Container(
                             padding: const EdgeInsets.fromLTRB(30, 27, 30, 0),
                             child: ElevatedButton(
-                                onPressed: findDevice,
+                                onPressed: () => controlDevice("/effect?mode=0&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFFBEC)),
                                 child: const Text('Включение',
@@ -77,7 +57,7 @@ class MainScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width * 0.3,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
-                                onPressed: findDevice,
+                                onPressed: () => controlDevice("/effect?mode=100&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFEEAF)),
                                 child: const Icon(Icons.arrow_back_sharp))),
@@ -96,7 +76,7 @@ class MainScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width * 0.3,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
-                                onPressed: findDevice,
+                                onPressed: () => controlDevice("/effect?mode=100&param=1"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFEEAF)),
                                 child: const Icon(Icons.arrow_forward_sharp))),
@@ -113,7 +93,7 @@ class MainScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width * 0.5,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
-                                onPressed: findDevice,
+                                onPressed: () => controlDevice("/effect?mode=2&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFF8FEFF)),
                                 child: const Text('Белый',
@@ -122,7 +102,7 @@ class MainScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width * 0.5,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
-                                onPressed: findDevice,
+                                onPressed: () => controlDevice("/effect?mode=5&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFA9595)),
                                 child: const Text('Красный',
@@ -140,7 +120,7 @@ class MainScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width * 0.5,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
-                                onPressed: findDevice,
+                                onPressed: () => controlDevice("/effect?mode=3&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFF693)),
                                 child: const Text('Жёлтый',
@@ -149,7 +129,7 @@ class MainScreen extends StatelessWidget {
                             width: MediaQuery.of(context).size.width * 0.5,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
-                                onPressed: findDevice,
+                                onPressed: () => controlDevice("/effect?mode=6&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFF9DFA95)),
                                 child: const Text('Зелёный',
@@ -168,7 +148,7 @@ class MainScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.fromLTRB(30, 27, 14, 0),
                                 child: ElevatedButton(
-                                    onPressed: findDevice,
+                                    onPressed: () => controlDevice("/effect?mode=4&param=0"),
                                     style: ElevatedButton.styleFrom(
                                         primary: const Color(0xFFDA9CF7)),
                                     child: const Text('Фиолетовый',
@@ -178,7 +158,7 @@ class MainScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.fromLTRB(14, 27, 30, 0),
                                 child: ElevatedButton(
-                                    onPressed: findDevice,
+                                    onPressed: () => controlDevice("/effect?mode=7&param=0"),
                                     style: ElevatedButton.styleFrom(
                                         primary: const Color(0xFFA4ADFF)),
                                     child: const Text('Синий',

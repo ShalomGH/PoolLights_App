@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_first/funcs/functions.dart';
 
 import 'package:flutter_first/screens/main_page.dart';
 import 'package:flutter_first/themes/light_theme.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
+  pingDevice();
 }
 
 class MyApp extends StatelessWidget {
