@@ -5,6 +5,7 @@ import 'find_port.dart';
 import 'dart:io';
 
 findDevice() async {
+  print("Find start");
   var prefs = await SharedPreferences.getInstance();
   const int port = 23223;
 
@@ -25,32 +26,42 @@ findDevice() async {
 }
 
 void pingDevice() async {
+  print("Ping start");
   var prefs = await SharedPreferences.getInstance();
   final String? ip = prefs.getString("ip");
   if (ip != null) {
-    Socket.connect(ip, 23223, timeout: const Duration(seconds: 1)).then((socket){
+    Socket.connect(ip, 23223, timeout: const Duration(seconds: 1))
+        .then((socket) {
       print("Old ip works");
       socket.destroy();
-    }).catchError((error){
-      if (error is SocketException){
+    }).catchError((error) {
+      if (error is SocketException) {
         findDevice();
         print("Ping exception");
       }
     });
+  } else {
+    findDevice();
   }
 }
 
 controlDevice(String params) async {
+  print("Control start");
   var prefs = await SharedPreferences.getInstance();
   final String? ip = prefs.getString("ip");
 
-  final String host = "http://${ip}:23223$params";
+  if (ip != null) {
+    final String host = "http://$ip:23223$params";
+    print(host);
 
-  final response = await http.get(Uri.parse(host));
-  if (response.statusCode == 200) {
-    print("Success response");
+    final response = await http.get(Uri.parse(host));
+
+    if (response.statusCode == 200) {
+      print("Success response");
+    } else {
+      print('Failed response');
+    }
   } else {
-    pingDevice;
-    print('Failed response');
+    pingDevice();
   }
 }

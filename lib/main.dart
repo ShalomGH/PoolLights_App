@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_first/funcs/functions.dart';
 
 import 'package:flutter_first/screens/main_page.dart';
 import 'package:flutter_first/themes/light_theme.dart';
+
+import 'funcs/functions.dart';
 
 void main() async {
   runApp(const MyApp());

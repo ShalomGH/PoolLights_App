@@ -44,16 +44,17 @@ class NetworkAnalyzer {
         socket.destroy();
         out.sink.add(NetworkAddress(host, true));
       }).catchError((dynamic e) {
-        if (e is! SocketException) {
-          throw e;
-        }
+        // if (e is! SocketException) {
+        //   throw e;
+        // }
 
         // Check if connection timed out or we got one of predefined errors
         if (e.osError == null || _errorCodes.contains(e.osError!.errorCode)) {
           out.sink.add(NetworkAddress(host, false));
-        } else {
-          throw e;
         }
+        // else {
+        //   throw e;
+        // }
       });
     }
 
