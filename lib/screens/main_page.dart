@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_first/screens/settings_page.dart';
 
 import '../funcs/functions.dart';
 
@@ -13,20 +12,6 @@ class MainScreen extends StatelessWidget {
         backgroundColor: const Color(0xFFF2F2F2),
         appBar: AppBar(
           title: const Text('Фонари бассейна'),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(
-                Icons.settings,
-                color: Color(0xFF2F2F2F),
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                        builder: (context) => const SettingsPage()));
-              },
-            ),
-          ],
         ),
         body: Container(
             padding: const EdgeInsets.only(bottom: 30),
@@ -43,7 +28,7 @@ class MainScreen extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(30, 27, 30, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice("/effect?mode=0&param=0"),
+                                    controlDevice("/effect?mode=0&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFFBEC)),
                                 child: const Text('Включение',
@@ -60,7 +45,7 @@ class MainScreen extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice("/effect?mode=100&param=0"),
+                                    controlDevice("/effect?mode=100&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFEEAF)),
                                 child: const Icon(Icons.arrow_back_sharp))),
@@ -80,7 +65,7 @@ class MainScreen extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice("/effect?mode=100&param=1"),
+                                    controlDevice("/effect?mode=100&param=1", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFEEAF)),
                                 child: const Icon(Icons.arrow_forward_sharp))),
@@ -98,7 +83,7 @@ class MainScreen extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice("/effect?mode=2&param=0"),
+                                    controlDevice("/effect?mode=2&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFF8FEFF)),
                                 child: const Text('Белый',
@@ -108,7 +93,7 @@ class MainScreen extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice("/effect?mode=5&param=0"),
+                                    controlDevice("/effect?mode=5&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFA9595)),
                                 child: const Text('Красный',
@@ -127,7 +112,7 @@ class MainScreen extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice("/effect?mode=3&param=0"),
+                                    controlDevice("/effect?mode=3&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFF693)),
                                 child: const Text('Жёлтый',
@@ -137,7 +122,7 @@ class MainScreen extends StatelessWidget {
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice("/effect?mode=6&param=0"),
+                                    controlDevice("/effect?mode=6&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFF9DFA95)),
                                 child: const Text('Зелёный',
@@ -157,7 +142,7 @@ class MainScreen extends StatelessWidget {
                                     const EdgeInsets.fromLTRB(30, 27, 14, 0),
                                 child: ElevatedButton(
                                     onPressed: () =>
-                                        controlDevice("/effect?mode=4&param=0"),
+                                        controlDevice("/effect?mode=4&param=0", context),
                                     style: ElevatedButton.styleFrom(
                                         primary: const Color(0xFFDA9CF7)),
                                     child: const Text('Фиолетовый',
@@ -168,7 +153,7 @@ class MainScreen extends StatelessWidget {
                                     const EdgeInsets.fromLTRB(14, 27, 30, 0),
                                 child: ElevatedButton(
                                     onPressed: () =>
-                                        controlDevice("/effect?mode=7&param=0"),
+                                        controlDevice("/effect?mode=7&param=0", context),
                                     style: ElevatedButton.styleFrom(
                                         primary: const Color(0xFFA4ADFF)),
                                     child: const Text('Синий',

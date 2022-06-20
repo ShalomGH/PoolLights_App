@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'find_port.dart';
 import 'dart:io';
 
-findDevice() async {
+findDevice(BuildContext context) async {
   print("Find start");
   var prefs = await SharedPreferences.getInstance();
   const int port = 23223;
@@ -22,10 +23,11 @@ findDevice() async {
     });
   } else {
     print("error");
+    simpleDialog(context);
   }
 }
 
-void pingDevice() async {
+void pingDevice(BuildContext context) async {
   print("Ping start");
   var prefs = await SharedPreferences.getInstance();
   final String? ip = prefs.getString("ip");
@@ -36,16 +38,16 @@ void pingDevice() async {
       socket.destroy();
     }).catchError((error) {
       if (error is SocketException) {
-        findDevice();
+        findDevice(context);
         print("Ping exception");
       }
     });
   } else {
-    findDevice();
+    findDevice(context);
   }
 }
 
-controlDevice(String params) async {
+controlDevice(String params, BuildContext context) async {
   print("Control start");
   var prefs = await SharedPreferences.getInstance();
   final String? ip = prefs.getString("ip");
@@ -62,6 +64,26 @@ controlDevice(String params) async {
       print('Failed response');
     }
   } else {
-    pingDevice();
+    pingDevice(context);
   }
+}
+
+Future simpleDialog(BuildContext context) {
+  return showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Title'),
+        content: Text('Dialog content'),
+        actions: <Widget>[
+          ElevatedButton(
+            child: Text('Ok'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

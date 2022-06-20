@@ -7,7 +7,6 @@ import 'funcs/functions.dart';
 
 void main() async {
   runApp(const MyApp());
-  pingDevice();
 }
 
 class MyApp extends StatelessWidget {
@@ -15,6 +14,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    pingDevice(context);
     return MaterialApp(
       theme: CustomTheme.lightTheme,
       home: const MainScreen(),
