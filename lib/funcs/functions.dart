@@ -19,6 +19,8 @@ findDevice(BuildContext context) async {
       if (addr.exists) {
         print('Found device: ${addr.ip}');
         prefs.setString("ip", addr.ip);
+      } else {
+        simpleDialog(context);
       }
     });
   } else {
@@ -49,6 +51,7 @@ void pingDevice(BuildContext context) async {
 
 controlDevice(String params, BuildContext context) async {
   print("Control start");
+  var response;
   var prefs = await SharedPreferences.getInstance();
   final String? ip = prefs.getString("ip");
 
@@ -56,12 +59,15 @@ controlDevice(String params, BuildContext context) async {
     final String host = "http://$ip:23223$params";
     print(host);
 
-    final response = await http.get(Uri.parse(host));
-
-    if (response.statusCode == 200) {
-      print("Success response");
-    } else {
-      print('Failed response');
+    try {
+      response = await http.get(Uri.parse(host));
+      if (response.statusCode == 200) {
+        print("Success response");
+      } else {
+        print('Failed response');
+      }
+    } catch (e) {
+      print(e);
     }
   } else {
     pingDevice(context);
