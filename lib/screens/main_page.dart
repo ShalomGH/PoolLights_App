@@ -2,11 +2,42 @@ import 'package:flutter/material.dart';
 
 import '../funcs/functions.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
 
   @override
+  MainScreenState createState() => MainScreenState();
+}
+
+class MainScreenState extends State<MainScreen> {
+  void showAlertDialog(BuildContext context, String massage) {
+    final alert = AlertDialog(
+      title: const Text('Error'),
+      titlePadding: const EdgeInsets.all(20.0),
+      content: Text(massage),
+      contentPadding: const EdgeInsets.all(20.0),
+      actions: <Widget>[
+        MaterialButton(
+          onPressed: () {
+            if (!mounted) return;
+            Navigator.of(context).pop(Page);
+          },
+          child: const Text('Ok'),
+        ),
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // pingDevice(context);
     return Scaffold(
         backgroundColor: const Color(0xFFF2F2F2),
         appBar: AppBar(
@@ -18,11 +49,7 @@ class MainScreen extends StatelessWidget {
                 color: Color(0xFF2F2F2F),
               ),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute<void>(
-                        builder: (context) =>
-                            const Center(child: MyStatelessWidget())));
+                delIp();
               },
             ),
           ],
@@ -41,8 +68,9 @@ class MainScreen extends StatelessWidget {
                         child: Container(
                             padding: const EdgeInsets.fromLTRB(30, 27, 30, 0),
                             child: ElevatedButton(
-                                onPressed: () => controlDevice(
-                                    "/effect?mode=0&param=0", context),
+                                onPressed: () =>
+                                    controlDevice(
+                                        "/effect?mode=0&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFFBEC)),
                                 child: const Text('Включение',
@@ -55,16 +83,23 @@ class MainScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.3,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
-                                onPressed: () => controlDevice(
-                                    "/effect?mode=100&param=0", context),
+                                onPressed: () =>
+                                    controlDevice(
+                                        "/effect?mode=100&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFEEAF)),
                                 child: const Icon(Icons.arrow_back_sharp))),
                         Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.3,
                             margin: const EdgeInsets.only(top: 27),
                             decoration: BoxDecoration(
                               color: const Color(0xFFD2E3FF),
@@ -72,14 +107,18 @@ class MainScreen extends StatelessWidget {
                             ),
                             child: const Center(
                               child:
-                                  Text("Режим", style: TextStyle(fontSize: 15)),
+                              Text("Режим", style: TextStyle(fontSize: 15)),
                             )),
                         Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.3,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
-                                onPressed: () => controlDevice(
-                                    "/effect?mode=100&param=1", context),
+                                onPressed: () =>
+                                    controlDevice(
+                                        "/effect?mode=100&param=1", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFEEAF)),
                                 child: const Icon(Icons.arrow_forward_sharp))),
@@ -93,21 +132,29 @@ class MainScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.5,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
-                                onPressed: () => controlDevice(
-                                    "/effect?mode=2&param=0", context),
+                                onPressed: () =>
+                                    controlDevice(
+                                        "/effect?mode=2&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFF8FEFF)),
                                 child: const Text('Белый',
                                     style: TextStyle(fontSize: 15)))),
                         Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.5,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
-                                onPressed: () => controlDevice(
-                                    "/effect?mode=5&param=0", context),
+                                onPressed: () =>
+                                    controlDevice(
+                                        "/effect?mode=5&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFA9595)),
                                 child: const Text('Красный',
@@ -122,21 +169,29 @@ class MainScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.5,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
-                                onPressed: () => controlDevice(
-                                    "/effect?mode=3&param=0", context),
+                                onPressed: () =>
+                                    controlDevice(
+                                        "/effect?mode=3&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFF693)),
                                 child: const Text('Жёлтый',
                                     style: TextStyle(fontSize: 15)))),
                         Container(
-                            width: MediaQuery.of(context).size.width * 0.5,
+                            width: MediaQuery
+                                .of(context)
+                                .size
+                                .width * 0.5,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
-                                onPressed: () => controlDevice(
-                                    "/effect?mode=6&param=0", context),
+                                onPressed: () =>
+                                    controlDevice(
+                                        "/effect?mode=6&param=0", context),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFF9DFA95)),
                                 child: const Text('Зелёный',
@@ -151,56 +206,44 @@ class MainScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 0.5,
                                 padding:
-                                    const EdgeInsets.fromLTRB(30, 27, 14, 0),
+                                const EdgeInsets.fromLTRB(30, 27, 14, 0),
                                 child: ElevatedButton(
-                                    onPressed: () => controlDevice(
-                                        "/effect?mode=4&param=0", context),
+                                    onPressed: () =>
+                                        controlDevice(
+                                            "/effect?mode=4&param=0", context),
                                     style: ElevatedButton.styleFrom(
                                         primary: const Color(0xFFDA9CF7)),
                                     child: const Text('Фиолетовый',
                                         style: TextStyle(fontSize: 15)))),
                             Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
+                                width: MediaQuery
+                                    .of(context)
+                                    .size
+                                    .width * 0.5,
                                 padding:
-                                    const EdgeInsets.fromLTRB(14, 27, 30, 0),
+                                const EdgeInsets.fromLTRB(14, 27, 30, 0),
                                 child: ElevatedButton(
-                                    onPressed: () => controlDevice(
-                                        "/effect?mode=7&param=0", context),
+                                    onPressed: () =>
+                                        controlDevice(
+                                            "/effect?mode=7&param=0", context),
                                     style: ElevatedButton.styleFrom(
                                         primary: const Color(0xFFA4ADFF)),
                                     child: const Text('Синий',
-                                        style: TextStyle(fontSize: 15)))),
-                          ]))
-                ])));
-  }
-}
-
-class MyStatelessWidget extends StatelessWidget {
-  const MyStatelessWidget({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () => showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('AlertDialog Title'),
-          content: const Text('AlertDialog description'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'Cancel'),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      ),
-      child: const Text('Show Dialog'),
+                                        style: TextStyle(fontSize: 15)
+                                    )
+                                )
+                            )
+                          ]
+                      )
+                  )
+                ]
+            )
+        )
     );
   }
 }

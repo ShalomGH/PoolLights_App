@@ -64,7 +64,7 @@ class NetworkAnalyzer {
   }
 
   static Future<Socket> ping(String host, int port) {
-    return Socket.connect(host, port, timeout: const Duration(seconds: 4))
+    return Socket.connect(host, port, timeout: const Duration(seconds: 5))
         .then((socket) {
       return socket;
     });
