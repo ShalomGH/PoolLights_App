@@ -1,6 +1,11 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
-import '../funcs/functions.dart';
+import 'package:flutter/material.dart';
+import 'package:network_info_plus/network_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+
+import '../funcs/find_port.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -10,7 +15,123 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  void showAlertDialog(BuildContext context, String massage) {
+  Future<String?> getIp() async {
+    var prefs = await SharedPreferences.getInstance();
+    final String? ip = prefs.getString("ip");
+    print('get end');
+    return ip;
+  }
+
+  setIp(var ip) async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.setString("ip", ip);
+  }
+
+  delIp() async {
+    var prefs = await SharedPreferences.getInstance();
+    prefs.remove('ip');
+  }
+
+  // check if ip from mem == null
+  Future<void> checkForIp() async {
+    String? ip = await getIp();
+    print('check for ip, ip = $ip');
+    if (ip == null) {
+      print("check, null, find()");
+      await _findDevice();
+    }
+  }
+
+  _scan(stream) {
+    stream.listen((NetworkAddress addr) {
+      if (addr.exists) {
+        print('Found device: ${addr.ip}');
+        setIp(addr.ip);
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
+
+  void pingDevice() async {
+    print("Ping start");
+    checkForIp();
+    final ip = await getIp();
+
+    Socket.connect(ip, 23223, timeout: const Duration(seconds: 2))
+        .then((socket) {
+      print("Old ip works");
+      socket.destroy();
+    }).catchError((error) {
+      if (error is SocketException) {
+        _findDevice();
+        print("Ping exception");
+      }
+    });
+  }
+
+  controlDevice(String params) async {
+    var response;
+
+    print("Control start");
+    await checkForIp();
+    String? ip = await getIp();
+
+    if (ip != null){
+      final String host = "http://$ip:23223$params";
+      print('host = $host');
+
+      try {
+        response = await http.get(Uri.parse(host));
+      } catch (e) {
+        print(e);
+      }
+
+      if (response != null) {
+        if (response.statusCode == 200) {
+          print("Success response");
+        } else {
+          print('Failed response');
+        }
+      }
+    } else {
+      _showAlertDialog('null ip');
+    }
+
+  }
+
+  Future<void> _findDevice() async {
+    print("find");
+    const int port = 23223;
+    final String? wifiBroadcast = await NetworkInfo()
+        .getWifiBroadcast(); // returns null if WiFi is turned off
+
+    if (wifiBroadcast != null) {
+      final String? wifiIPv4 = await NetworkInfo().getWifiIP();
+      print('wifiIPv4 = $wifiIPv4');
+
+      if (wifiIPv4 != null) {
+        print("wifiIPv4 != null");
+
+        final String subnet = wifiIPv4.substring(0, wifiIPv4.lastIndexOf('.'));
+        final stream = NetworkAnalyzer.discover(subnet, port);
+        final scan = await _scan(stream);
+        if (scan== null) {
+          _showAlertDialog("Device not found");
+        }
+      } else {
+        _showAlertDialog("WiFi error");
+      }
+    } else {
+      _showAlertDialog("Turn on Wi-Fi");
+    }
+  }
+
+
+
+  void _showAlertDialog(String massage) {
     final alert = AlertDialog(
       title: const Text('Error'),
       titlePadding: const EdgeInsets.all(20.0),
@@ -37,7 +158,7 @@ class MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // pingDevice(context);
+    pingDevice();
     return Scaffold(
         backgroundColor: const Color(0xFFF2F2F2),
         appBar: AppBar(
@@ -69,8 +190,7 @@ class MainScreenState extends State<MainScreen> {
                             padding: const EdgeInsets.fromLTRB(30, 27, 30, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice(
-                                        "/effect?mode=0&param=0", context),
+                                    controlDevice("/effect?mode=0&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFFBEC)),
                                 child: const Text('Включение',
@@ -83,23 +203,16 @@ class MainScreenState extends State<MainScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.3,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice(
-                                        "/effect?mode=100&param=0", context),
+                                    controlDevice("/effect?mode=100&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFEEAF)),
                                 child: const Icon(Icons.arrow_back_sharp))),
                         Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.3,
                             margin: const EdgeInsets.only(top: 27),
                             decoration: BoxDecoration(
                               color: const Color(0xFFD2E3FF),
@@ -107,18 +220,14 @@ class MainScreenState extends State<MainScreen> {
                             ),
                             child: const Center(
                               child:
-                              Text("Режим", style: TextStyle(fontSize: 15)),
+                                  Text("Режим", style: TextStyle(fontSize: 15)),
                             )),
                         Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.3,
+                            width: MediaQuery.of(context).size.width * 0.3,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice(
-                                        "/effect?mode=100&param=1", context),
+                                    controlDevice("/effect?mode=100&param=1"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFEEAF)),
                                 child: const Icon(Icons.arrow_forward_sharp))),
@@ -132,29 +241,21 @@ class MainScreenState extends State<MainScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.5,
+                            width: MediaQuery.of(context).size.width * 0.5,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice(
-                                        "/effect?mode=2&param=0", context),
+                                    controlDevice("/effect?mode=2&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFF8FEFF)),
                                 child: const Text('Белый',
                                     style: TextStyle(fontSize: 15)))),
                         Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.5,
+                            width: MediaQuery.of(context).size.width * 0.5,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice(
-                                        "/effect?mode=5&param=0", context),
+                                    controlDevice("/effect?mode=5&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFA9595)),
                                 child: const Text('Красный',
@@ -169,29 +270,21 @@ class MainScreenState extends State<MainScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.5,
+                            width: MediaQuery.of(context).size.width * 0.5,
                             padding: const EdgeInsets.fromLTRB(30, 27, 14, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice(
-                                        "/effect?mode=3&param=0", context),
+                                    controlDevice("/effect?mode=3&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFFFFF693)),
                                 child: const Text('Жёлтый',
                                     style: TextStyle(fontSize: 15)))),
                         Container(
-                            width: MediaQuery
-                                .of(context)
-                                .size
-                                .width * 0.5,
+                            width: MediaQuery.of(context).size.width * 0.5,
                             padding: const EdgeInsets.fromLTRB(14, 27, 30, 0),
                             child: ElevatedButton(
                                 onPressed: () =>
-                                    controlDevice(
-                                        "/effect?mode=6&param=0", context),
+                                    controlDevice("/effect?mode=6&param=0"),
                                 style: ElevatedButton.styleFrom(
                                     primary: const Color(0xFF9DFA95)),
                                 child: const Text('Зелёный',
@@ -206,44 +299,28 @@ class MainScreenState extends State<MainScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.5,
+                                width: MediaQuery.of(context).size.width * 0.5,
                                 padding:
-                                const EdgeInsets.fromLTRB(30, 27, 14, 0),
+                                    const EdgeInsets.fromLTRB(30, 27, 14, 0),
                                 child: ElevatedButton(
                                     onPressed: () =>
-                                        controlDevice(
-                                            "/effect?mode=4&param=0", context),
+                                        controlDevice("/effect?mode=4&param=0"),
                                     style: ElevatedButton.styleFrom(
                                         primary: const Color(0xFFDA9CF7)),
                                     child: const Text('Фиолетовый',
                                         style: TextStyle(fontSize: 15)))),
                             Container(
-                                width: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .width * 0.5,
+                                width: MediaQuery.of(context).size.width * 0.5,
                                 padding:
-                                const EdgeInsets.fromLTRB(14, 27, 30, 0),
+                                    const EdgeInsets.fromLTRB(14, 27, 30, 0),
                                 child: ElevatedButton(
                                     onPressed: () =>
-                                        controlDevice(
-                                            "/effect?mode=7&param=0", context),
+                                        controlDevice("/effect?mode=7&param=0"),
                                     style: ElevatedButton.styleFrom(
                                         primary: const Color(0xFFA4ADFF)),
                                     child: const Text('Синий',
-                                        style: TextStyle(fontSize: 15)
-                                    )
-                                )
-                            )
-                          ]
-                      )
-                  )
-                ]
-            )
-        )
-    );
+                                        style: TextStyle(fontSize: 15))))
+                          ]))
+                ])));
   }
 }

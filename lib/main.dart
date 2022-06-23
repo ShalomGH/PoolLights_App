@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_first/screens/main_page.dart';
 import 'package:flutter_first/themes/light_theme.dart';
 
+
 void main() async {
   runApp(const MyApp());
 }
