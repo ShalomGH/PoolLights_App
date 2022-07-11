@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:network_info_plus/network_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-import '../funcs/find_port.dart';
+import '../functoins/find_port.dart';
+import '../functoins/mem_functions.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -15,45 +15,28 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State<MainScreen> {
-  Future<String?> getIp() async {
-    var prefs = await SharedPreferences.getInstance();
-    final String? ip = prefs.getString("ip");
-    print('get end');
-    return ip;
-  }
-
-  setIp(var ip) async {
-    var prefs = await SharedPreferences.getInstance();
-    prefs.setString("ip", ip);
-  }
-
-  delIp() async {
-    var prefs = await SharedPreferences.getInstance();
-    prefs.remove('ip');
-  }
-
   // check if ip from mem == null
   Future<void> checkForIp() async {
     String? ip = await getIp();
-    print('check for ip, ip = $ip');
     if (ip == null) {
-      print("check, null, find()");
       await _findDevice();
     }
   }
 
-  _scan(stream) {
-    stream.listen((NetworkAddress addr) {
+  _scan(stream) async {
+    int? ipFlag;
+    await stream.listen((NetworkAddress addr) {
       if (addr.exists) {
         print('Found device: ${addr.ip}');
         setIp(addr.ip);
-        return true;
-      } else {
-        return false;
+        ipFlag = 1;
+      }
+    }, onDone: () {
+      if (ipFlag == null) {
+        _showAlertDialog("device Тot found");
       }
     });
   }
-
 
   void pingDevice() async {
     print("Ping start");
@@ -73,36 +56,32 @@ class MainScreenState extends State<MainScreen> {
   }
 
   controlDevice(String params) async {
-    var response;
+    http.Response? response;
 
     print("Control start");
     await checkForIp();
     String? ip = await getIp();
 
-    if (ip != null){
+    if (ip != null) {
       final String host = "http://$ip:23223$params";
       print('host = $host');
 
       try {
         response = await http.get(Uri.parse(host));
       } catch (e) {
-        print(e);
+        _showAlertDialog("Connection error");
       }
 
       if (response != null) {
-        if (response.statusCode == 200) {
-          print("Success response");
-        } else {
+        if (response.statusCode != 200) {
           print('Failed response');
+          _showAlertDialog("Connection error");
         }
       }
-    } else {
-      _showAlertDialog('null ip');
     }
-
   }
 
-  Future<void> _findDevice() async {
+  _findDevice() async {
     print("find");
     const int port = 23223;
     final String? wifiBroadcast = await NetworkInfo()
@@ -114,13 +93,9 @@ class MainScreenState extends State<MainScreen> {
 
       if (wifiIPv4 != null) {
         print("wifiIPv4 != null");
-
         final String subnet = wifiIPv4.substring(0, wifiIPv4.lastIndexOf('.'));
         final stream = NetworkAnalyzer.discover(subnet, port);
-        final scan = await _scan(stream);
-        if (scan== null) {
-          _showAlertDialog("Device not found");
-        }
+        _scan(stream);
       } else {
         _showAlertDialog("WiFi error");
       }
@@ -128,8 +103,6 @@ class MainScreenState extends State<MainScreen> {
       _showAlertDialog("Turn on Wi-Fi");
     }
   }
-
-
 
   void _showAlertDialog(String massage) {
     final alert = AlertDialog(
@@ -157,8 +130,13 @@ class MainScreenState extends State<MainScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     pingDevice();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFFF2F2F2),
         appBar: AppBar(

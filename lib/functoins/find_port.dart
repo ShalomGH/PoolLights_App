@@ -28,6 +28,7 @@ class NetworkAnalyzer {
     int port, {
     Duration timeout = const Duration(seconds: 5),
   }) {
+
     if (port < 1 || port > 65535) {
       throw 'Incorrect port';
     }
